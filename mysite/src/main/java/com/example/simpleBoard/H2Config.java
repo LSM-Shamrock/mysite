@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.simpleBoard;
 
 
 import org.h2.server.web.JakartaWebServlet;

@@ -1,6 +1,8 @@
-package com.example.demo;
+package com.example.simpleBoard.answer;
 
 import java.time.LocalDateTime;
+
+import com.example.simpleBoard.question.Question;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

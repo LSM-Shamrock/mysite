@@ -1,7 +1,9 @@
-package com.example.demo;
+package com.example.simpleBoard.question;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.simpleBoard.answer.Answer;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
