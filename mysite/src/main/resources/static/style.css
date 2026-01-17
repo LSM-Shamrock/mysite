@@ -1,0 +1,9 @@
+/* style.csss */
+textarea {
+	width: 100%;
+}
+input[type="submit"] {
+	padding: 2px;
+	background-color: skyblue;
+	border-radius: 7px;
+}

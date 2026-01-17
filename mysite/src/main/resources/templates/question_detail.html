@@ -1,0 +1,46 @@
+<html layout:decorate="~{layout}">
+
+<div class="container" layout:fragment="content">
+	<div class="row">
+		<div class="col">
+			<div class="jumbotron my-2">
+				<h1>질문 상세내용</h1>
+			</div>
+			<h1 class="border-bottom py-2">
+				[[${question.subject}]]
+			</h1>
+			<div class="card">
+				<div class="card-header">
+					질문 내용
+				</div>
+				<div class="card-body">
+					<h5 class="card-title">
+						[[${question.content}]]
+					</h5>
+					<a href="#" class="btn btn-primary">
+						[[${#temporals.format(question.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<h4 class="border-bottom my-5">
+		[[${#lists.size(question.answerList)}]]개의 답변이 있습니다.
+	</h4>
+	<div class="card my-3" th:each="answer : ${question.answerList}">
+		<div class="card-body">
+			[[${answer.content}]]
+			<div class="d-flex justify-content-end">
+				<span class="badge badge-pill badge-info p-2"> 
+					[[${#temporals.format(answer.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
+				</span>
+			</div>
+		</div>
+	</div>
+	<form method="post" th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}">
+		<div th:replace="~{form_errors::formErrorsFragment}"></div>
+		<textarea th:field="*{content}" cols="30" rows="10"></textarea>
+		<input type="submit" value="답변 등록" class="btn btn-warning my-3" />
+	</form>
+</div>
+</html>

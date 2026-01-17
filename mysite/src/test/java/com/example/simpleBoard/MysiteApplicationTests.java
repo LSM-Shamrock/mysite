@@ -26,7 +26,7 @@ class MysiteApplicationTests {
 	private AnswerRepository answerRepository;
 	
 	@Test
-	@Transactional
+//	@Transactional
 	void contextLoads() {
 //		Question q;
 //		q = new Question();
@@ -84,25 +84,24 @@ class MysiteApplicationTests {
 		
 
 		
-//		for (int i=0; i<50; i++) {
-//			Question q;
-//			q = new Question();
+//		for (int i=0; i<300; i++) {
+//			Question q = new Question();
 //			q.setSubject("테스트 코드를 이용해 생성한 내용:[내용"+i+"]");
 //			q.setContent("테스트 코드를 이용해 생성한 제목:[제목"+i+"]");
 //			q.setCreateDate(LocalDateTime.now());		
 //			this.questionRepository.save(q);
 //		}
 		
-		Optional<Question> optional = this.questionRepository.findById(3);
-		assertTrue(optional.isPresent());
-		Question question = optional.get(); 
-		List<Answer> aList = question.getAnswerList();
-		
-		
-		for (Answer a : aList) {
-			System.out.println("ID:3인 질문의 답글 내용: "+a.getContent());
-		}
-		System.out.println("ID:3인 질문의 답글 개수: "+aList.size());
+//		Optional<Question> optional = this.questionRepository.findById(3);
+//		assertTrue(optional.isPresent());
+//		Question question = optional.get(); 
+//		List<Answer> aList = question.getAnswerList();
+//		
+//		
+//		for (Answer a : aList) {
+//			System.out.println("ID:3인 질문의 답글 내용: "+a.getContent());
+//		}
+//		System.out.println("ID:3인 질문의 답글 개수: "+aList.size());
 	}
 
 }
