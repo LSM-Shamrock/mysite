@@ -3,44 +3,94 @@
 <div class="container" layout:fragment="content">
 	<div class="row">
 		<div class="col">
-			<div class="jumbotron my-2">
-				<h1>질문 상세내용</h1>
-			</div>
-			<h1 class="border-bottom py-2">
-				[[${question.subject}]]
-			</h1>
 			<div class="card">
 				<div class="card-header">
-					질문 내용
+					<h4>
+						[[${question.subject}]]
+					</h4>
+					<span class="mb-0">
+						글쓴이 : [[${question.author?.username}]]
+					</span>
+					<div class="float-right">
+						<a  
+							class="btn btn-outline-info"
+							th:href="@{|/question/modify/${question.id}|}"
+							sec:authorize="isAuthenticated()"
+							th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
+							수정
+						</a>
+						<a  
+							class="btn btn-outline-danger delete"
+							href="javascript:void(0);"
+							th:data-uri="@{|/question/delete/${question.id}|}"
+							sec:authorize="isAuthenticated()"
+							th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
+							삭제
+						</a>
+					</div>
+					
 				</div>
 				<div class="card-body">
 					<h5 class="card-title">
 						[[${question.content}]]
 					</h5>
-					<a href="#" class="btn btn-primary">
+					<div class="float-right">
 						[[${#temporals.format(question.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
-					</a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<h4 class="border-bottom my-5">
+	<h4 class="border-top mt-5">
 		[[${#lists.size(question.answerList)}]]개의 답변이 있습니다.
 	</h4>
 	<div class="card my-3" th:each="answer : ${question.answerList}">
 		<div class="card-body">
 			[[${answer.content}]]
-			<div class="d-flex justify-content-end">
-				<span class="badge badge-pill badge-info p-2"> 
-					[[${#temporals.format(answer.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
-				</span>
+			<div>
+				<div class="float-right">
+					<span class="">
+						[[${answer.author?.username}]]
+					</span>
+					<small class="mx-3"> 
+						[[${#temporals.format(answer.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
+					</small>
+					<a  
+						class="btn btn-outline-info"
+						th:href="@{|/answer/modify/${answer.id}|}"
+						sec:authorize="isAuthenticated()"
+						th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
+						수정
+					</a>
+					<a  
+						class="btn btn-outline-danger delete"
+						href="javascript:void(0);"
+						th:data-uri="@{|/answer/delete/${answer.id}|}"
+						sec:authorize="isAuthenticated()"
+						th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
+						삭제
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
 	<form method="post" th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}">
 		<div th:replace="~{form_errors::formErrorsFragment}"></div>
-		<textarea th:field="*{content}" cols="30" rows="10"></textarea>
+		<textarea th:field="*{content}" cols="30" rows="10" sec:authorize="isAnonymous()" disabled placeholder="로그인 후 답글 작성 가능"></textarea>
+		<textarea th:field="*{content}" cols="30" rows="10" sec:authorize="isAuthenticated()"></textarea>
 		<input type="submit" value="답변 등록" class="btn btn-warning my-3" />
 	</form>
 </div>
+
+<script layout:fragment="script">
+	const delete_elements = document.getElementsByClassName("delete");
+	console.log(delete_elements);
+	Array.from(delete_elements).forEach(function (element) {
+		element.addEventListener("click", function() {
+			if (confirm("정말로 삭제하시겠씁니까?")) {
+				location.href = this.dataset.uri;
+			}
+		});
+	});
+</script>
 </html>

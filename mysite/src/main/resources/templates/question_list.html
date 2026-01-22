@@ -14,6 +14,7 @@
 					<tr>
 						<th scope="col">번호</th>
 						<th scope="col">제목</th>
+						<th scope="col">글쓴이</th>
 						<th scope="col">작성일자</th>
 					</tr>
 				</thead>
@@ -27,9 +28,12 @@
 								db에 있는 제목
 							</a>
 							<br />
-							<span class="text-white badge bg-danger" th:if="${#lists.size(question.answerList) > 0}">
-								[[${#lists.size(question.answerList)}]]
-							</span>
+							<small th:if="${#lists.size(question.answerList) > 0}">
+								[[${#lists.size(question.answerList)}]] 답변
+							</small>
+						</td>
+						<td>
+							[[${question.author?.username}]]
 						</td>
 						<td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
 					</tr>

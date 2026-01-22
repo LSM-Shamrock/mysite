@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.simpleBoard.DataNotFoundException;
+import com.example.simpleBoard.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,11 +39,25 @@ public class QuestionService {
 		}
 	}
 
-	public void create(String subject, String content) {
+	
+	// 질문 저장 로직
+	public void create(String subject, String content, SiteUser user) {
 		Question question = new Question();
 		question.setSubject(subject);
 		question.setContent(content);
 		question.setCreateDate(LocalDateTime.now());
+		question.setAuthor(user);
 		this.questionRepository.save(question);
+	}
+	// 질문 수정 로직
+	public void modify(Question question, String subject, String content) {
+		question.setSubject(subject);
+		question.setContent(content);
+		question.setModifyDate(LocalDateTime.now());
+		this.questionRepository.save(question);
+	}
+	// 질문 삭제 로직
+	public void delete(Question question) {
+		this.questionRepository.delete(question);
 	}
 }

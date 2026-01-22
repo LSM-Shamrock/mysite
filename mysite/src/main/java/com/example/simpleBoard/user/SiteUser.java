@@ -23,4 +23,9 @@ public class SiteUser {
 	
 	@Column(unique=true)
 	private String email;
+	
+	@Override
+	public String toString() {
+		return this.username;
+	}
 }
