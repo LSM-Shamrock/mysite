@@ -3,6 +3,7 @@
 <div class="container" layout:fragment="content">
 	<div class="row">
 		<div class="col">
+			<br />
 			<div class="card">
 				<div class="card-header">
 					<h4>
@@ -12,15 +13,20 @@
 						글쓴이 : [[${question.author?.username}]]
 					</span>
 					<div class="float-right">
-						<a  
-							class="btn btn-outline-info"
+						<a 	class="btn rounded-fill" 
+							th:classappend="${question.voter.contains(siteUser)} ? 'btn-success' : 'btn-outline-success'"
+							sec:authorize="isAuthenticated()"
+							th:href="@{|/question/vote/${question.id}|}"
+							>
+							추천<span class="">[[${#lists.size(question.voter)}]]</span>
+						</a>
+						<a  class="btn btn-outline-info"
 							th:href="@{|/question/modify/${question.id}|}"
 							sec:authorize="isAuthenticated()"
 							th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
 							수정
 						</a>
-						<a  
-							class="btn btn-outline-danger delete"
+						<a  class="btn btn-outline-danger delete"
 							href="javascript:void(0);"
 							th:data-uri="@{|/question/delete/${question.id}|}"
 							sec:authorize="isAuthenticated()"
@@ -45,16 +51,27 @@
 		[[${#lists.size(question.answerList)}]]개의 답변이 있습니다.
 	</h4>
 	<div class="card my-3" th:each="answer : ${question.answerList}">
+		<a th:id="|answer_${answer.id}|"></a>
 		<div class="card-body">
 			[[${answer.content}]]
 			<div>
 				<div class="float-right">
-					<span class="">
+					<span class="mx-1">
 						[[${answer.author?.username}]]
 					</span>
-					<small class="mx-3"> 
-						[[${#temporals.format(answer.createDate, 'yyyy년 MM월 dd일 HH시 mm분')}]]
+					<small class="mx-1"> 
+						[[${#temporals.format(answer.createDate, '작성: yyyy-MM-dd H:mm')}]]
 					</small>
+					<small class="mx-1" th:if="answer.modifyDate != null"> 
+						[[${#temporals.format(answer.modifyDate, '수정: yyyy-MM-dd HH:mm')}]]
+					</small>
+					<a 	class="btn rounded-fill" 
+						th:classappend="${answer.voter.contains(siteUser)} ? 'btn-success' : 'btn-outline-success'"
+						sec:authorize="isAuthenticated()"
+						th:href="@{|/answer/vote/${answer.id}|}"
+						>
+						추천<span class="">[[${#lists.size(answer.voter)}]]</span>
+					</a>
 					<a  
 						class="btn btn-outline-info"
 						th:href="@{|/answer/modify/${answer.id}|}"
