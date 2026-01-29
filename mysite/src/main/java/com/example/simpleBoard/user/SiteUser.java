@@ -28,4 +28,6 @@ public class SiteUser {
 	public String toString() {
 		return this.username;
 	}
+	
+	private String imageUrl;
 }

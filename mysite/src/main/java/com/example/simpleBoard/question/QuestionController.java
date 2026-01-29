@@ -5,6 +5,7 @@ import java.security.Principal;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,38 +29,56 @@ import lombok.RequiredArgsConstructor;
 public class QuestionController {	
 	private final QuestionService questionService;
 	private final UserService userService;
-	
+
+// region list
 	@GetMapping("/list")
 	public String list(
 			Model model, 
+			UserDetails userDetails,
 			@RequestParam(value="page", defaultValue="0") int page,
-			@RequestParam(value="kw", defaultValue="") String kw 
+			@RequestParam(value="kw", defaultValue="") String kw
 	) {
+		if (userDetails != null) {
+			SiteUser user = userService.getUser(userDetails.getUsername());
+			model.addAttribute("profileImage", user.getImageUrl());
+		}
+		
 		Page<Question> paging = this.questionService.getList(page, kw);
 		model.addAttribute("paging", paging);
 		return "question_list";
 	}
+// endregion
 	
+// region detail
 	@GetMapping("/detail/{id}")
 	public String detail(
-			Model model, 
-			@PathVariable("id") Integer id, 
-			AnswerForm answerForm,
-			Principal principal
+		Model model, 
+		UserDetails userDetails,
+		@PathVariable("id") Integer id, 
+		AnswerForm answerForm,
+		Principal principal
 	) {
+		if (userDetails != null) {
+			SiteUser user = userService.getUser(userDetails.getUsername());
+			model.addAttribute("profileImage", user.getImageUrl());
+		}
+		
 		Question question = this.questionService.getQuestion(id);
 		SiteUser siteUser = principal == null ? null : this.userService.getUser(principal.getName());
 		model.addAttribute("question", question);
 		model.addAttribute("siteUser", siteUser);
 		return "question_detail";
 	}
-	
+// endregion
+
+// region 질문등록
 	// 질문 등록 get
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/create")
 	public String questionCreate(QuestionForm questionForm) {
 		return "question_form";
 	}
+	
 	// 질문 등록 post
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create")
@@ -75,8 +94,9 @@ public class QuestionController {
 		this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
 		return "redirect:/question/list";
 	}
+// endregion 	
 	
-	
+// region 질문 수정
 	// 질문 수정 get
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
@@ -110,8 +130,9 @@ public class QuestionController {
 		
 		return String.format("redirect:/question/detail/%s", id);
 	}
+// endregion
 	
-	
+// region 질문 삭제
 	// 질문 삭제 get
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
@@ -128,7 +149,9 @@ public class QuestionController {
 		return "redirect:/question/list";
 		
 	}
+// #endregion
 	
+// #region 질문 추천
 	// 질문 추천
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/vote/{id}")
@@ -141,4 +164,5 @@ public class QuestionController {
 		this.questionService.vote(question, siteUser);
 		return String.format("redirect:/question/detail/%s", id);
 	}
+// #endregion
 }

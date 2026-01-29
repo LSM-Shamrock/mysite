@@ -38,7 +38,8 @@ public class QuestionService {
 		
 		Specification<Question> specification = search(kw);
 		
-		return this.questionRepository.findAll(specification, pageable);
+//		return this.questionRepository.findAll(specification, pageable);
+		return this.questionRepository.findAllByKeyword(kw, pageable);
 	}
 	
 	public Question getQuestion(Integer id) {

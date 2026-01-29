@@ -1,0 +1,81 @@
+<html layout:decorate="~{layout}">
+	<div class="container" layout:fragment="content">
+		<div class="jumbotron">
+			<h1>일별 영화 박스 오피스</h1>
+		</div>
+		 <table class="table table-hover">
+			<thead>
+				<tr>
+					<th>박스오피스 순위</th>
+					<th>영화명</th>
+					<th>영화 포스터</th>
+					<th>개봉일</th>
+					<th>누적 관객수</th>
+					<th>누적 매출액</th>
+				</tr>
+			</thead>
+			<tbody class="table-body">
+				ajax로 가져온 데이터 출력
+			</tbody>
+		 </table>
+	</div>
+	<script layout:fragment="script">
+		$(function() {
+			console.log("ajax 시작");
+			const today = getDate();
+			console.log("요청 날짜 : ", today);
+			getJSON(today);			
+			
+			function getJSON(targetDt) {
+				$.ajax({
+					type :"get",
+					url : "/api/boxoffice",
+					data : {targetDt : targetDt},
+					dataType : "json",
+					
+					success : function(data) {
+						console.log("통신성공");
+						console.log("전체 데이터 : ", data);
+
+						const list = data.boxOfficeResult.dailyBoxOfficeList;
+						console.log(list);
+						
+						let table = $(".table-body");
+						
+						for (let d of list) {
+							let element = `
+							<tr>
+								<th>${d.rank}</th>
+								<th>${d.movieNm}</th>
+								<th>영화 포스터</th>
+								<th>${d.openDt}</th>
+								<th>${d.audiAcc}</th>
+								<th>${d.salesAcc}</th>
+							</tr>
+							`
+							
+							table.append(element);
+						}
+					},
+					
+					error : function() {
+						console.log("통신에러");
+					}
+				});
+			}
+			
+			
+			function getDate() {
+				const date = new Date();
+				let yyyy = date.getFullYear();
+				let mm = date.getMonth();
+				let dd = date.getDate();
+				
+				if (mm < 10) mm = "0"+mm;
+				if (dd < 10) dd = "0"+dd;
+				
+				return `${yyyy}${mm}${dd}`;
+			}
+		})
+	</script>
+</html>
